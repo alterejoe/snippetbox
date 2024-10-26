@@ -33,8 +33,7 @@ func snippetCreate(w http.ResponseWriter, r *http.Request) {
 func snippetCreatePost(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusCreated)
-	w.Header().Add("Server", "Go")
-	io.WriteString(w, "Snippet create post is working")
+	io.WriteString(w, "Create a new snippet")
 }
 
 func main() {

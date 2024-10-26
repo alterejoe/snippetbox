@@ -4,9 +4,10 @@ GET http://localhost:3000/
 HEAD http://localhost:3000/
 ###
 
-POST http://localhost:3000/snippet/create
+GET http://localhost:3000/snippet/view/1234
 ###
 
-POST http://localhost:3000/snippet/create
+GET http://localhost:3000/snippet/create/
+###
 
-
+POST http://localhost:3000/snippet/create/
