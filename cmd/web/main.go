@@ -1,44 +1,13 @@
 package main
 
 import (
-	"fmt"
-	"io"
 	"log"
 	"net/http"
-	"strconv"
 )
-
-// 38570
-func root(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "Root")
-}
-
-func snippetView(w http.ResponseWriter, r *http.Request) {
-	viewid := r.PathValue("id")
-	id, err := strconv.Atoi(viewid)
-	if err != nil || id < 1 {
-		http.NotFound(w, r)
-		return
-	}
-
-	fmt.Fprintf(w, "Display specific snippet with the ID: %d ...", id)
-	// msg := fmt.Sprintf("Display specific snipped with the ID: %d ...", id)
-	// w.Write([]byte(msg))
-}
-
-func snippetCreate(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Display form to create a new snippet"))
-}
-
-func snippetCreatePost(w http.ResponseWriter, r *http.Request) {
-
-	w.WriteHeader(http.StatusCreated)
-	io.WriteString(w, "Create a new snippet")
-}
 
 func main() {
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /{$}", root)
+	mux.HandleFunc("GET /{$}", home)
 	mux.HandleFunc("GET /snippet/view/{id}", snippetView)
 	mux.HandleFunc("GET /snippet/create/", snippetCreate)
 	mux.HandleFunc("POST /snippet/create/", snippetCreatePost)
