@@ -11,15 +11,21 @@ import (
 
 func home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Server", "Go")
-	fmt.Fprint(w, "Root")
-	ts, err := template.ParseFiles("./ui/html/pages/home.tmpl")
+
+	files := []string{
+		"./ui/html/base.html",
+		"./ui/html/pages/home.html",
+		"./ui/html/partials/nav.html",
+	}
+
+	ts, err := template.ParseFiles(files...)
 	if err != nil {
 		log.Fatal(err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
-	err = ts.Execute(w, nil)
+	err = ts.ExecuteTemplate(w, "base", nil)
 	if err != nil {
 		log.Fatal(err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)

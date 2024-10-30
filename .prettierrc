@@ -1,12 +1,18 @@
 {
-	"tabWidth": 4,
-	"useTabs": true,
-	"overrides": [
-		{
-			"files": "*.tmpl",
-			"options": {
-				"parser": "html"
-			}
-		}
-	]
+        "tabWidth": 4,
+        "useTabs": true,
+        "overrides": [
+                {
+                        "files": "*.tmpl",
+                        "options": {
+                                "parser": "html"
+                        }
+                },
+                {
+                        "files": ["*.html"],
+                        "options": {
+                                "parser": "go-template"
+                        }
+                }
+        ],
 }
