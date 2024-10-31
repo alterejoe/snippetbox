@@ -3,9 +3,15 @@ package main
 import (
 	"flag"
 	"log"
+	"log/slog"
 	"net/http"
+	"os"
 	"sync"
 )
+
+type application struct {
+	logger *slog.Logger
+}
 
 var mu sync.Mutex
 
@@ -44,18 +50,29 @@ func main() {
 	_ = flag.String("unique-id", "", "Unique ID for development")
 	flag.Parse()
 
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		Level:     slog.LevelDebug,
+		AddSource: true,
+	}))
+
+	app := application{
+		logger: logger,
+	}
+
 	fileserver := http.FileServer(neuteredFileSystem{http.Dir("./ui/static")})
 	log.Print("Server started")
 
 	mux.Handle("GET /static/", http.StripPrefix("/static", fileserver))
-	mux.HandleFunc("GET /{$}", home)
-	mux.HandleFunc("GET /snippet/view/{id}", snippetView)
-	mux.HandleFunc("GET /snippet/create/", snippetCreate)
-	mux.HandleFunc("POST /snippet/create/", snippetCreatePost)
+	mux.HandleFunc("GET /{$}", app.home)
+	mux.HandleFunc("GET /snippet/view/{id}", app.snippetView)
+	mux.HandleFunc("GET /snippet/create/", app.snippetCreate)
+	mux.HandleFunc("POST /snippet/create/", app.snippetCreatePost)
 
-	log.Printf("Starting server on %s", *addr)
+	logger.Info("Starting server", slog.String("addr", *addr))
 	err := http.ListenAndServe(*addr, mux)
-
-	log.Fatal(err)
-	log.Print("Server stopped")
+	logger.Error((err.Error()))
+	os.Exit(1)
+	// logger
+	// log.Fatal(err)
+	// log.Print("Server stopped")
 }

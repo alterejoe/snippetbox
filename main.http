@@ -24,16 +24,17 @@ GET http://localhost:3000/static/
 GET http://localhost:3000/static/img
 ###
 
+GET http://localhost:3000/static/js
+###
+
 GET http://localhost:3000/static/css
 ###
 
 GET http://localhost:3000/static/css/main.css
 Content-Type: text/css
-
 ###
 
 HEAD http://localhost:3000/static/img/logo.png
 Range: bytes=100-199
-
 ###
 
