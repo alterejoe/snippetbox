@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"log"
 	"log/slog"
 	"net/http"
 	"os"
@@ -45,34 +44,21 @@ func (nfs neuteredFileSystem) Open(path string) (http.File, error) {
 }
 
 func main() {
-	mux := http.NewServeMux()
 	addr := flag.String(("addr"), ":3000", "HTTP network address")
 	_ = flag.String("unique-id", "", "Unique ID for development")
 	flag.Parse()
 
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-		Level:     slog.LevelDebug,
-		AddSource: true,
+		Level: slog.LevelDebug,
+		// AddSource: true,
 	}))
 
 	app := application{
 		logger: logger,
 	}
 
-	fileserver := http.FileServer(neuteredFileSystem{http.Dir("./ui/static")})
-	log.Print("Server started")
-
-	mux.Handle("GET /static/", http.StripPrefix("/static", fileserver))
-	mux.HandleFunc("GET /{$}", app.home)
-	mux.HandleFunc("GET /snippet/view/{id}", app.snippetView)
-	mux.HandleFunc("GET /snippet/create/", app.snippetCreate)
-	mux.HandleFunc("POST /snippet/create/", app.snippetCreatePost)
-
 	logger.Info("Starting server", slog.String("addr", *addr))
-	err := http.ListenAndServe(*addr, mux)
+	err := http.ListenAndServe(*addr, app.routes())
 	logger.Error((err.Error()))
 	os.Exit(1)
-	// logger
-	// log.Fatal(err)
-	// log.Print("Server stopped")
 }
